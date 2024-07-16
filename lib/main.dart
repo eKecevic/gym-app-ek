@@ -1,8 +1,12 @@
+import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
-import 'workouts.dart';
+import 'package:flutter/services.dart';
+import 'package:path_provider/path_provider.dart';
+import 'exercise_detail_screen.dart';
 import 'workout_card.dart';
 import 'models.dart';
-import 'exercise_detail_screen.dart';
 
 void main() {
   runApp(MyApp());
@@ -28,17 +32,59 @@ class WorkoutScreen extends StatefulWidget {
 class _WorkoutScreenState extends State<WorkoutScreen> {
   String selectedDuration = '1h 30m';
   String selectedType = 'Push muscles';
+  List<Workout> workouts = [];
+
+  @override
+  void initState() {
+    super.initState();
+    loadWorkouts();
+  }
+
+  Future<void> loadWorkouts() async {
+    final String response =
+        await rootBundle.loadString('assets/data/workouts.json');
+    final data = await json.decode(response);
+    setState(() {
+      workouts = selectedType == 'Push muscles'
+          ? (data['push'] as List).map((i) => Workout.fromJson(i)).toList()
+          : (data['pull'] as List).map((i) => Workout.fromJson(i)).toList();
+    });
+  }
+
+  Future<void> saveWorkouts() async {
+    final directory = await getApplicationDocumentsDirectory();
+    final path = directory.path;
+    final file = File('$path/workouts.json');
+    final backupFile = File('$path/workouts_backup.json');
+
+    if (await file.exists()) {
+      await file.copy(backupFile.path);
+    }
+
+    final data = {
+      'push': workouts.where((w) => w.type == 'push').toList(),
+      'pull': workouts.where((w) => w.type == 'pull').toList()
+    };
+
+    await file.writeAsString(json.encode(data));
+  }
 
   void removeWorkout(int index) {
     setState(() {
       workouts.removeAt(index);
     });
+    saveWorkouts();
   }
 
   void replaceWorkout(int index) {
-    // Hier sollte die Logik für das Ersetzen der Übung implementiert werden
-    // Zum Beispiel könnte ein Popup oder ein neuer Bildschirm geöffnet werden
     print("Replace workout at index $index");
+  }
+
+  int getDurationInMinutes(String duration) {
+    final parts = duration.split(' ');
+    final hours = int.parse(parts[0].replaceAll('h', ''));
+    final minutes = int.parse(parts[1].replaceAll('m', ''));
+    return hours * 60 + minutes;
   }
 
   @override
@@ -79,6 +125,7 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
                 onChanged: (String? newValue) {
                   setState(() {
                     selectedType = newValue!;
+                    loadWorkouts(); // Reload workouts based on new type
                   });
                 },
               ),
@@ -175,11 +222,36 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
                     ],
                   ),
                 ),
-                child: WorkoutCard(workout: workout),
+                child: WorkoutCard(
+                  workout: workout,
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ExerciseDetailScreen(
+                          workout: workout,
+                        ),
+                      ),
+                    );
+                  },
+                ),
               );
             }).toList(),
           ),
         ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => TimerScreen(
+                selectedDuration: getDurationInMinutes(selectedDuration),
+              ),
+            ),
+          );
+        },
+        child: Icon(Icons.play_arrow),
       ),
     );
   }
@@ -268,9 +340,78 @@ class SettingsScreen extends StatelessWidget {
             title: Text('Timed Intervals'),
             subtitle: Text('Off'),
           ),
-          // Add more settings options as needed
         ],
       ),
+    );
+  }
+}
+
+class TimerScreen extends StatelessWidget {
+  final int selectedDuration;
+
+  TimerScreen({required this.selectedDuration});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Timer'),
+      ),
+      body: Center(
+        child: TimerWidget(
+          duration: selectedDuration,
+        ),
+      ),
+    );
+  }
+}
+
+class TimerWidget extends StatefulWidget {
+  final int duration;
+
+  TimerWidget({required this.duration});
+
+  @override
+  _TimerWidgetState createState() => _TimerWidgetState();
+}
+
+class _TimerWidgetState extends State<TimerWidget> {
+  late int remainingTime;
+  late Timer timer;
+
+  @override
+  void initState() {
+    super.initState();
+    remainingTime = widget.duration;
+    startTimer();
+  }
+
+  void startTimer() {
+    timer = Timer.periodic(Duration(seconds: 1), (timer) {
+      setState(() {
+        if (remainingTime > 0) {
+          remainingTime--;
+        } else {
+          timer.cancel();
+        }
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    timer.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final duration = Duration(seconds: remainingTime);
+    final minutes = duration.inMinutes;
+    final seconds = duration.inSeconds % 60;
+    return Text(
+      '${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')} / ${widget.duration ~/ 60}h ${widget.duration % 60}m',
+      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
     );
   }
 }

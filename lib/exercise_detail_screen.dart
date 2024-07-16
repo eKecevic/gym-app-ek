@@ -1,65 +1,63 @@
+import 'dart:io';
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
 import 'models.dart';
 
 class ExerciseDetailScreen extends StatefulWidget {
-  final String title;
-  final List<ExerciseSet> warmUpSets;
-  final List<ExerciseSet> workingSets;
+  final Workout workout;
 
-  ExerciseDetailScreen({
-    required this.title,
-    required this.warmUpSets,
-    required this.workingSets,
-  });
+  ExerciseDetailScreen({required this.workout});
 
   @override
   _ExerciseDetailScreenState createState() => _ExerciseDetailScreenState();
 }
 
 class _ExerciseDetailScreenState extends State<ExerciseDetailScreen> {
-  late List<ExerciseSet> warmUpSets;
-  late List<ExerciseSet> workingSets;
+  late Workout workout;
 
   @override
   void initState() {
     super.initState();
-    warmUpSets = widget.warmUpSets;
-    workingSets = widget.workingSets;
+    workout = widget.workout;
   }
 
-  void _addWarmUpSet() {
+  Future<void> saveWorkouts() async {
+    final directory = await getApplicationDocumentsDirectory();
+    final path = directory.path;
+    final file = File('$path/workouts.json');
+    final backupFile = File('$path/workouts_backup.json');
+
+    if (await file.exists()) {
+      await file.copy(backupFile.path);
+    }
+
+    final data = {
+      'push': workout.type == 'push' ? [workout.toJson()] : [],
+      'pull': workout.type == 'pull' ? [workout.toJson()] : []
+    };
+
+    await file.writeAsString(json.encode(data));
+  }
+
+  void addSet() {
     setState(() {
-      warmUpSets.add(ExerciseSet(reps: 0, weight: 0));
+      workout.workingSets.add(ExerciseSet(reps: 0, weight: 0));
+      saveWorkouts();
     });
   }
 
-  void _addWorkingSet() {
+  void removeSet(int index) {
     setState(() {
-      workingSets.add(ExerciseSet(reps: 0, weight: 0));
+      workout.workingSets.removeAt(index);
+      saveWorkouts();
     });
   }
 
-  void _removeWarmUpSet(int index) {
+  void updateSet(int index, int reps, int weight) {
     setState(() {
-      warmUpSets.removeAt(index);
-    });
-  }
-
-  void _removeWorkingSet(int index) {
-    setState(() {
-      workingSets.removeAt(index);
-    });
-  }
-
-  void _updateReps(ExerciseSet set, String reps) {
-    setState(() {
-      set.reps = int.tryParse(reps) ?? set.reps;
-    });
-  }
-
-  void _updateWeight(ExerciseSet set, String weight) {
-    setState(() {
-      set.weight = int.tryParse(weight) ?? set.weight;
+      workout.workingSets[index] = ExerciseSet(reps: reps, weight: weight);
+      saveWorkouts();
     });
   }
 
@@ -67,91 +65,81 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
+        title: Text(workout.title),
       ),
       body: ListView(
         padding: EdgeInsets.all(8.0),
         children: [
-          _buildSetList(
-            title: 'WARM-UP SETS',
-            sets: warmUpSets,
-            onAddSet: _addWarmUpSet,
-            onRemoveSet: _removeWarmUpSet,
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              'Warm-up Sets',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
           ),
-          SizedBox(height: 20),
-          _buildSetList(
-            title: 'WORKING SETS',
-            sets: workingSets,
-            onAddSet: _addWorkingSet,
-            onRemoveSet: _removeWorkingSet,
+          Column(
+            children: workout.warmUpSets
+                .asMap()
+                .entries
+                .map((entry) => buildSetTile(entry.key, entry.value, true))
+                .toList(),
           ),
-          SizedBox(height: 20),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              'Working Sets',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+          ),
+          Column(
+            children: workout.workingSets
+                .asMap()
+                .entries
+                .map((entry) => buildSetTile(entry.key, entry.value, false))
+                .toList(),
+          ),
           ElevatedButton(
-            onPressed: () {
-              // Save or any other action
-            },
-            child: Text('Start Workout'),
+            onPressed: addSet,
+            child: Text('Add Working Set'),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildSetList({
-    required String title,
-    required List<ExerciseSet> sets,
-    required VoidCallback onAddSet,
-    required void Function(int) onRemoveSet,
-  }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          '$title',
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-        ),
-        SizedBox(height: 10),
-        ...sets.asMap().entries.map((entry) {
-          int index = entry.key;
-          ExerciseSet set = entry.value;
-          return Row(
-            children: [
-              Expanded(
-                child: TextFormField(
-                  initialValue: set.reps.toString(),
-                  decoration: InputDecoration(labelText: 'Reps'),
-                  keyboardType: TextInputType.number,
-                  onChanged: (value) => _updateReps(set, value),
-                ),
-              ),
-              SizedBox(width: 10),
-              Expanded(
-                child: TextFormField(
-                  initialValue: set.weight.toString(),
-                  decoration: InputDecoration(labelText: 'Weight'),
-                  keyboardType: TextInputType.number,
-                  onChanged: (value) => _updateWeight(set, value),
-                ),
-              ),
-              IconButton(
-                icon: Icon(Icons.delete),
-                onPressed: () => onRemoveSet(index),
-              ),
-            ],
-          );
-        }).toList(),
-        SizedBox(height: 10),
-        TextButton(
-          onPressed: onAddSet,
-          child: Text('Add Set'),
-        ),
-      ],
+  Widget buildSetTile(int index, ExerciseSet set, bool isWarmUp) {
+    return ListTile(
+      title: Row(
+        children: [
+          Expanded(
+            child: TextFormField(
+              initialValue: set.reps.toString(),
+              decoration: InputDecoration(labelText: 'Reps'),
+              keyboardType: TextInputType.number,
+              onChanged: (value) {
+                int reps = int.parse(value);
+                updateSet(index, reps, set.weight);
+              },
+            ),
+          ),
+          SizedBox(width: 16),
+          Expanded(
+            child: TextFormField(
+              initialValue: set.weight.toString(),
+              decoration: InputDecoration(labelText: 'Weight'),
+              keyboardType: TextInputType.number,
+              onChanged: (value) {
+                int weight = int.parse(value);
+                updateSet(index, set.reps, weight);
+              },
+            ),
+          ),
+          IconButton(
+            icon: Icon(Icons.delete),
+            onPressed: () => removeSet(index),
+          ),
+        ],
+      ),
     );
   }
 }

@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'models.dart';
-import 'exercise_detail_screen.dart';
 
 class WorkoutCard extends StatelessWidget {
   final Workout workout;
+  final VoidCallback onTap;
 
-  WorkoutCard({
-    required this.workout,
-  });
+  WorkoutCard({required this.workout, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -16,20 +14,10 @@ class WorkoutCard extends StatelessWidget {
       child: ListTile(
         leading: Icon(Icons.fitness_center),
         title: Text(workout.title),
-        subtitle: Text('${workout.workingSets.length} sets'),
+        subtitle: Text(
+            '${workout.warmUpSets.length + workout.workingSets.length} sets'),
         trailing: Icon(Icons.more_vert),
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => ExerciseDetailScreen(
-                title: workout.title,
-                warmUpSets: workout.warmUpSets,
-                workingSets: workout.workingSets,
-              ),
-            ),
-          );
-        },
+        onTap: onTap,
       ),
     );
   }
