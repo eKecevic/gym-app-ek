@@ -5,7 +5,10 @@ class WorkoutCard extends StatelessWidget {
   final Workout workout;
   final VoidCallback onTap;
 
-  WorkoutCard({required this.workout, required this.onTap});
+  WorkoutCard({
+    required this.workout,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {

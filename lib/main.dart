@@ -4,9 +4,11 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'exercise_detail_screen.dart';
 import 'workout_card.dart';
 import 'models.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 void main() {
   runApp(MyApp());
@@ -41,39 +43,76 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
   }
 
   Future<void> loadWorkouts() async {
-    final String response =
-        await rootBundle.loadString('assets/data/workouts.json');
-    final data = await json.decode(response);
-    setState(() {
-      workouts = selectedType == 'Push muscles'
-          ? (data['push'] as List).map((i) => Workout.fromJson(i)).toList()
-          : (data['pull'] as List).map((i) => Workout.fromJson(i)).toList();
-    });
+    try {
+      if (kIsWeb) {
+        final prefs = await SharedPreferences.getInstance();
+        final workoutsString = prefs.getString('workouts');
+        if (workoutsString != null) {
+          final data = json.decode(workoutsString);
+          setState(() {
+            workouts = selectedType == 'Push muscles'
+                ? (data['push'] as List)
+                    .map((i) => Workout.fromJson(i))
+                    .toList()
+                : (data['pull'] as List)
+                    .map((i) => Workout.fromJson(i))
+                    .toList();
+          });
+          return;
+        }
+      }
+      // Load from assets if not available in shared preferences
+      final response = await rootBundle.loadString('assets/data/workouts.json');
+      final data = json.decode(response);
+      setState(() {
+        workouts = selectedType == 'Push muscles'
+            ? (data['push'] as List).map((i) => Workout.fromJson(i)).toList()
+            : (data['pull'] as List).map((i) => Workout.fromJson(i)).toList();
+      });
+    } catch (e) {
+      print("Error loading workouts: $e");
+    }
   }
 
   Future<void> saveWorkouts() async {
-    final directory = await getApplicationDocumentsDirectory();
-    final path = directory.path;
-    final file = File('$path/workouts.json');
-    final backupFile = File('$path/workouts_backup.json');
+    try {
+      final data = {
+        'push': workouts
+            .where((w) => w.type == 'push')
+            .map((w) => w.toJson())
+            .toList(),
+        'pull': workouts
+            .where((w) => w.type == 'pull')
+            .map((w) => w.toJson())
+            .toList(),
+      };
 
-    if (await file.exists()) {
-      await file.copy(backupFile.path);
+      if (kIsWeb) {
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString('workouts', json.encode(data));
+      } else {
+        // Save workouts to local storage if not on web
+        final directory = await getApplicationDocumentsDirectory();
+        final path = directory.path;
+        final file = File('$path/workouts.json');
+        final backupFile = File('$path/workouts_backup.json');
+
+        if (await file.exists()) {
+          await file.copy(backupFile.path);
+        }
+
+        await file.writeAsString(json.encode(data));
+      }
+    } catch (e) {
+      print("Error saving workouts: $e");
     }
-
-    final data = {
-      'push': workouts.where((w) => w.type == 'push').toList(),
-      'pull': workouts.where((w) => w.type == 'pull').toList()
-    };
-
-    await file.writeAsString(json.encode(data));
   }
 
   void removeWorkout(int index) {
     setState(() {
       workouts.removeAt(index);
+      saveWorkouts();
     });
-    saveWorkouts();
   }
 
   void replaceWorkout(int index) {
@@ -230,6 +269,12 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
                       MaterialPageRoute(
                         builder: (context) => ExerciseDetailScreen(
                           workout: workout,
+                          onSave: (updatedWorkout) {
+                            setState(() {
+                              workouts[index] = updatedWorkout;
+                              saveWorkouts();
+                            });
+                          },
                         ),
                       ),
                     );
