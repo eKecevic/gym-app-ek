@@ -34,7 +34,7 @@ class WorkoutScreen extends StatefulWidget {
 
 class _WorkoutScreenState extends State<WorkoutScreen> {
   String selectedDuration = '1h 30m';
-  String selectedType = 'Push muscles';
+  String selectedType = 'Push';
   String selectedRestTime = '1m'; // New variable for rest time
   List<Workout> workouts = [];
 
@@ -70,9 +70,9 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
 
   List<Workout> _getWorkoutsForSelectedType(Map<String, dynamic> data) {
     switch (selectedType) {
-      case 'Push muscles':
+      case 'Push':
         return (data['push'] as List).map((i) => Workout.fromJson(i)).toList();
-      case 'Pull muscles':
+      case 'Pull':
         return (data['pull'] as List).map((i) => Workout.fromJson(i)).toList();
       case 'Legs':
         return (data['legs'] as List).map((i) => Workout.fromJson(i)).toList();
@@ -175,7 +175,7 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
               ),
               _buildDropdownButton(
                 value: selectedType,
-                items: ['Push muscles', 'Pull muscles', 'Legs'],
+                items: ['Push', 'Pull', 'Legs'],
                 onChanged: (String? newValue) {
                   setState(() {
                     selectedType = newValue!;
