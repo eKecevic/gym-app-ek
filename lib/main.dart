@@ -141,6 +141,20 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
     return int.parse(restTime.replaceAll('m', '')) * 60;
   }
 
+  void addExercise() async {
+    final newExercise = await showDialog<Workout>(
+      context: context,
+      builder: (context) => AddExerciseDialog(),
+    );
+
+    if (newExercise != null) {
+      setState(() {
+        workouts.add(newExercise);
+        saveWorkouts();
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -309,6 +323,13 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
               );
             }).toList(),
           ),
+          SizedBox(height: 20), // Add some space before the plus button
+          Center(
+            child: FloatingActionButton(
+              onPressed: addExercise,
+              child: Icon(Icons.add),
+            ),
+          ),
         ],
       ),
       floatingActionButton: FloatingActionButton(
@@ -420,72 +441,156 @@ class SettingsScreen extends StatelessWidget {
   }
 }
 
-class TimerScreen extends StatelessWidget {
-  final int selectedDuration;
+class AddExerciseDialog extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Text('Add Exercise'),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          ElevatedButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => ExercisePoolScreen()),
+              ).then((selectedExercise) {
+                if (selectedExercise != null) {
+                  Navigator.pop(context, selectedExercise);
+                }
+              });
+            },
+            child: Text('Add from Pool'),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              final newWorkout = await Navigator.push<Workout>(
+                context,
+                MaterialPageRoute(builder: (context) => CreateExerciseScreen()),
+              );
+              if (newWorkout != null) {
+                Navigator.pop(context, newWorkout);
+              }
+            },
+            child: Text('Create Custom Exercise'),
+          ),
+        ],
+      ),
+    );
+  }
+}
 
-  TimerScreen({required this.selectedDuration});
+class CreateExerciseScreen extends StatefulWidget {
+  @override
+  _CreateExerciseScreenState createState() => _CreateExerciseScreenState();
+}
+
+class _CreateExerciseScreenState extends State<CreateExerciseScreen> {
+  String title = '';
+  String type = 'custom';
+  List<ExerciseSet> warmUpSets = [];
+  List<ExerciseSet> workingSets = [];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Timer'),
+        title: Text('Create Custom Exercise'),
       ),
-      body: Center(
-        child: TimerWidget(
-          duration: selectedDuration,
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            TextField(
+              decoration: InputDecoration(labelText: 'Exercise Title'),
+              onChanged: (value) {
+                setState(() {
+                  title = value;
+                });
+              },
+            ),
+            SizedBox(height: 10),
+            ElevatedButton(
+              onPressed: () {
+                setState(() {
+                  workingSets.add(ExerciseSet(reps: 10, weight: 50));
+                });
+              },
+              child: Text('Add Working Set'),
+            ),
+            Expanded(
+              child: ListView.builder(
+                itemCount: workingSets.length,
+                itemBuilder: (context, index) {
+                  final set = workingSets[index];
+                  return ListTile(
+                    title: Text('${set.reps} reps - ${set.weight} kg'),
+                    trailing: IconButton(
+                      icon: Icon(Icons.delete),
+                      onPressed: () {
+                        setState(() {
+                          workingSets.removeAt(index);
+                        });
+                      },
+                    ),
+                  );
+                },
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                final newWorkout = Workout(
+                  title: title,
+                  type: type,
+                  warmUpSets: warmUpSets,
+                  workingSets: workingSets,
+                );
+                Navigator.pop(context, newWorkout);
+              },
+              child: Text('Save Exercise'),
+            ),
+          ],
         ),
       ),
     );
   }
 }
 
-class TimerWidget extends StatefulWidget {
-  final int duration;
-
-  TimerWidget({required this.duration});
-
-  @override
-  _TimerWidgetState createState() => _TimerWidgetState();
-}
-
-class _TimerWidgetState extends State<TimerWidget> {
-  late int remainingTime;
-  late Timer timer;
-
-  @override
-  void initState() {
-    super.initState();
-    remainingTime = widget.duration;
-    startTimer();
-  }
-
-  void startTimer() {
-    timer = Timer.periodic(Duration(seconds: 1), (timer) {
-      setState(() {
-        if (remainingTime > 0) {
-          remainingTime--;
-        } else {
-          timer.cancel();
-        }
-      });
-    });
-  }
-
-  @override
-  void dispose() {
-    timer.cancel();
-    super.dispose();
-  }
-
+class ExercisePoolScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final duration = Duration(seconds: remainingTime);
-    final minutes = duration.inMinutes;
-    final seconds = duration.inSeconds % 60;
-    return Text(
-      '${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')} / ${widget.duration ~/ 60}h ${widget.duration % 60}m',
-      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Exercise Pool'),
+      ),
+      body: FutureBuilder(
+        future: rootBundle.loadString('assets/data/workouts.json'),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return Center(child: CircularProgressIndicator());
+          }
+          final data = json.decode(snapshot.data as String);
+          final exercises = [
+            ...(data['push'] as List).map((i) => Workout.fromJson(i)).toList(),
+            ...(data['pull'] as List).map((i) => Workout.fromJson(i)).toList(),
+            ...(data['legs'] as List).map((i) => Workout.fromJson(i)).toList(),
+          ];
+
+          return ListView.builder(
+            itemCount: exercises.length,
+            itemBuilder: (context, index) {
+              final workout = exercises[index];
+              return ListTile(
+                title: Text(workout.title),
+                subtitle: Text('${workout.workingSets.length} sets'),
+                onTap: () {
+                  Navigator.pop(context, workout);
+                },
+              );
+            },
+          );
+        },
+      ),
     );
   }
 }
