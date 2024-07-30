@@ -25,7 +25,9 @@ class WorkoutProvider with ChangeNotifier {
       final data = await json.decode(response);
       _workouts = selectedType == 'Push muscles'
           ? (data['push'] as List).map((i) => Workout.fromJson(i)).toList()
-          : (data['pull'] as List).map((i) => Workout.fromJson(i)).toList();
+          : selectedType == 'Pull muscles'
+              ? (data['pull'] as List).map((i) => Workout.fromJson(i)).toList()
+              : (data['legs'] as List).map((i) => Workout.fromJson(i)).toList();
 
       notifyListeners();
     } catch (e) {
@@ -44,6 +46,10 @@ class WorkoutProvider with ChangeNotifier {
             .toList(),
         'pull': _workouts
             .where((w) => w.type == 'pull')
+            .map((w) => w.toJson())
+            .toList(),
+        'legs': _workouts
+            .where((w) => w.type == 'legs')
             .map((w) => w.toJson())
             .toList()
       };

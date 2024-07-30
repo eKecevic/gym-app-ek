@@ -7,6 +7,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'exercise_detail_screen.dart';
 import 'workout_card.dart';
+import 'workout_execution_screen.dart';
 import 'models.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 
@@ -34,6 +35,7 @@ class WorkoutScreen extends StatefulWidget {
 class _WorkoutScreenState extends State<WorkoutScreen> {
   String selectedDuration = '1h 30m';
   String selectedType = 'Push muscles';
+  String selectedRestTime = '1m'; // New variable for rest time
   List<Workout> workouts = [];
 
   @override
@@ -50,13 +52,7 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
         if (workoutsString != null) {
           final data = json.decode(workoutsString);
           setState(() {
-            workouts = selectedType == 'Push muscles'
-                ? (data['push'] as List)
-                    .map((i) => Workout.fromJson(i))
-                    .toList()
-                : (data['pull'] as List)
-                    .map((i) => Workout.fromJson(i))
-                    .toList();
+            workouts = _getWorkoutsForSelectedType(data);
           });
           return;
         }
@@ -65,12 +61,23 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
       final response = await rootBundle.loadString('assets/data/workouts.json');
       final data = json.decode(response);
       setState(() {
-        workouts = selectedType == 'Push muscles'
-            ? (data['push'] as List).map((i) => Workout.fromJson(i)).toList()
-            : (data['pull'] as List).map((i) => Workout.fromJson(i)).toList();
+        workouts = _getWorkoutsForSelectedType(data);
       });
     } catch (e) {
       print("Error loading workouts: $e");
+    }
+  }
+
+  List<Workout> _getWorkoutsForSelectedType(Map<String, dynamic> data) {
+    switch (selectedType) {
+      case 'Push muscles':
+        return (data['push'] as List).map((i) => Workout.fromJson(i)).toList();
+      case 'Pull muscles':
+        return (data['pull'] as List).map((i) => Workout.fromJson(i)).toList();
+      case 'Legs':
+        return (data['legs'] as List).map((i) => Workout.fromJson(i)).toList();
+      default:
+        return [];
     }
   }
 
@@ -83,6 +90,10 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
             .toList(),
         'pull': workouts
             .where((w) => w.type == 'pull')
+            .map((w) => w.toJson())
+            .toList(),
+        'legs': workouts
+            .where((w) => w.type == 'legs')
             .map((w) => w.toJson())
             .toList(),
       };
@@ -126,6 +137,10 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
     return hours * 60 + minutes;
   }
 
+  int getRestTimeInSeconds(String restTime) {
+    return int.parse(restTime.replaceAll('m', '')) * 60;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -160,7 +175,7 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
               ),
               _buildDropdownButton(
                 value: selectedType,
-                items: ['Push muscles', 'Pull muscles'],
+                items: ['Push muscles', 'Pull muscles', 'Legs'],
                 onChanged: (String? newValue) {
                   setState(() {
                     selectedType = newValue!;
@@ -173,6 +188,15 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
                 items: ['Equipment'],
                 onChanged: (String? newValue) {
                   // Implement equipment change logic if needed
+                },
+              ),
+              _buildDropdownButton(
+                value: selectedRestTime,
+                items: ['1m', '2m', '3m'],
+                onChanged: (String? newValue) {
+                  setState(() {
+                    selectedRestTime = newValue!;
+                  });
                 },
               ),
             ],
@@ -193,6 +217,8 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
                 TargetMuscleWidget(muscle: 'Chest', percentage: 58),
                 TargetMuscleWidget(muscle: 'Triceps', percentage: 58),
                 TargetMuscleWidget(muscle: 'Shoulders', percentage: 58),
+                TargetMuscleWidget(
+                    muscle: 'Legs', percentage: 60), // Added Legs
               ],
             ),
           ),
@@ -290,8 +316,11 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => TimerScreen(
-                selectedDuration: getDurationInMinutes(selectedDuration),
+              builder: (context) => WorkoutExecutionScreen(
+                workouts: workouts,
+                selectedDuration: selectedDuration,
+                selectedRestTime:
+                    selectedRestTime, // Pass the selected rest time
               ),
             ),
           );

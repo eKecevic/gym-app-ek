@@ -1,7 +1,7 @@
 {
   "push": [
     {
-      "title": "Barbell Bench Press",
+      "title": "Bankdrücken mit Langhantel",
       "warmUpSets": [
         { "reps": 10, "weight": 40 }
       ],
@@ -14,7 +14,7 @@
       "type": "push"
     },
     {
-      "title": "Close-Grip Bench Press",
+      "title": "Bankdrücken mit engem Griff",
       "warmUpSets": [
         { "reps": 10, "weight": 40 }
       ],
@@ -25,11 +25,158 @@
         { "reps": 8, "weight": 60 }
       ],
       "type": "push"
+    },
+    {
+      "title": "Schrägbankdrücken mit Kurzhanteln",
+      "warmUpSets": [
+        { "reps": 10, "weight": 20 }
+      ],
+      "workingSets": [
+        { "reps": 10, "weight": 30 },
+        { "reps": 10, "weight": 30 },
+        { "reps": 10, "weight": 30 }
+      ],
+      "type": "push"
+    },
+    {
+      "title": "Seitenheben mit Kurzhanteln",
+      "warmUpSets": [
+        { "reps": 15, "weight": 10 }
+      ],
+      "workingSets": [
+        { "reps": 12, "weight": 12 },
+        { "reps": 12, "weight": 12 },
+        { "reps": 12, "weight": 12 }
+      ],
+      "type": "push"
+    },
+    {
+      "title": "Überkopfdrücken mit Langhantel",
+      "warmUpSets": [
+        { "reps": 10, "weight": 30 }
+      ],
+      "workingSets": [
+        { "reps": 8, "weight": 50 },
+        { "reps": 8, "weight": 50 },
+        { "reps": 8, "weight": 50 }
+      ],
+      "type": "push"
+    },
+    {
+      "title": "Dips",
+      "warmUpSets": [
+        { "reps": 5, "weight": 0 }
+      ],
+      "workingSets": [
+        { "reps": 8, "weight": 0 },
+        { "reps": 8, "weight": 0 },
+        { "reps": 8, "weight": 0 }
+      ],
+      "type": "push"
+    },
+    {
+      "title": "Trizepsdrücken am Kabelzug",
+      "warmUpSets": [
+        { "reps": 15, "weight": 20 }
+      ],
+      "workingSets": [
+        { "reps": 12, "weight": 30 },
+        { "reps": 12, "weight": 30 },
+        { "reps": 12, "weight": 30 }
+      ],
+      "type": "push"
     }
   ],
   "pull": [
     {
-      "title": "Dumbbell Rear Delt Raise",
+      "title": "Hintere Delt-Fliegende mit Kurzhanteln",
+      "warmUpSets": [
+        { "reps": 10, "weight": 10 }
+      ],
+      "workingSets": [
+        { "reps": 8, "weight": 20 },
+        { "reps": 8, "weight": 20 },
+        { "reps": 8, "weight": 20 },
+        { "reps": 8, "weight": 20 }
+      ],
+      "type": "pull"
+    },
+    {
+      "title": "Klimmzüge",
+      "warmUpSets": [
+        { "reps": 5, "weight": 0 }
+      ],
+      "workingSets": [
+        { "reps": 8, "weight": 0 },
+        { "reps": 8, "weight": 0 },
+        { "reps": 8, "weight": 0 }
+      ],
+      "type": "pull"
+    },
+    {
+      "title": "Langhantelrudern",
+      "warmUpSets": [
+        { "reps": 10, "weight": 30 }
+      ],
+      "workingSets": [
+        { "reps": 8, "weight": 50 },
+        { "reps": 8, "weight": 50 },
+        { "reps": 8, "weight": 50 }
+      ],
+      "type": "pull"
+    },
+    {
+      "title": "Kabelzug zur Brust",
+      "warmUpSets": [
+        { "reps": 15, "weight": 20 }
+      ],
+      "workingSets": [
+        { "reps": 12, "weight": 30 },
+        { "reps": 12, "weight": 30 },
+        { "reps": 12, "weight": 30 }
+      ],
+      "type": "pull"
+    },
+    {
+      "title": "Face Pulls",
+      "warmUpSets": [
+        { "reps": 15, "weight": 15 }
+      ],
+      "workingSets": [
+        { "reps": 12, "weight": 25 },
+        { "reps": 12, "weight": 25 },
+        { "reps": 12, "weight": 25 }
+      ],
+      "type": "pull"
+    },
+    {
+      "title": "Kurzhantelrudern",
+      "warmUpSets": [
+        { "reps": 12, "weight": 20 }
+      ],
+      "workingSets": [
+        { "reps": 10, "weight": 30 },
+        { "reps": 10, "weight": 30 },
+        { "reps": 10, "weight": 30 }
+      ],
+      "type": "pull"
+    },
+    {
+      "title": "Latziehen zur Brust",
+      "warmUpSets": [
+        { "reps": 15, "weight": 30 }
+      ],
+      "workingSets": [
+        { "reps": 12, "weight": 40 },
+        { "reps": 12, "weight": 40 },
+        { "reps": 12, "weight": 40 }
+      ],
+      "type": "pull"
+    }
+  ],
+  "legs": [
+    {
+      "title": "Kniebeugen mit Langhantel",
       "warmUpSets": [
         { "reps": 10, "weight": 40 }
       ],
@@ -39,7 +186,80 @@
         { "reps": 8, "weight": 60 },
         { "reps": 8, "weight": 60 }
       ],
-      "type": "pull"
+      "type": "legs"
+    },
+    {
+      "title": "Bulgarische Kniebeugen",
+      "warmUpSets": [
+        { "reps": 10, "weight": 20 }
+      ],
+      "workingSets": [
+        { "reps": 8, "weight": 30 },
+        { "reps": 8, "weight": 30 },
+        { "reps": 8, "weight": 30 },
+        { "reps": 8, "weight": 30 }
+      ],
+      "type": "legs"
+    },
+    {
+      "title": "Beinpresse",
+      "warmUpSets": [
+        { "reps": 12, "weight": 100 }
+      ],
+      "workingSets": [
+        { "reps": 10, "weight": 140 },
+        { "reps": 10, "weight": 140 },
+        { "reps": 10, "weight": 140 }
+      ],
+      "type": "legs"
+    },
+    {
+      "title": "Wadenheben",
+      "warmUpSets": [
+        { "reps": 15, "weight": 60 }
+      ],
+      "workingSets": [
+        { "reps": 12, "weight": 80 },
+        { "reps": 12, "weight": 80 },
+        { "reps": 12, "weight": 80 }
+      ],
+      "type": "legs"
+    },
+    {
+      "title": "Frontkniebeugen",
+      "warmUpSets": [
+        { "reps": 10, "weight": 30 }
+      ],
+      "workingSets": [
+        { "reps": 8, "weight": 50 },
+        { "reps": 8, "weight": 50 },
+        { "reps": 8, "weight": 50 }
+      ],
+      "type": "legs"
+    },
+    {
+      "title": "Beinbeuger liegend",
+      "warmUpSets": [
+        { "reps": 15, "weight": 40 }
+      ],
+      "workingSets": [
+        { "reps": 12, "weight": 60 },
+        { "reps": 12, "weight": 60 },
+        { "reps": 12, "weight": 60 }
+      ],
+      "type": "legs"
+    },
+    {
+      "title": "Beinstrecker",
+      "warmUpSets": [
+        { "reps": 15, "weight": 40 }
+      ],
+      "workingSets": [
+        { "reps": 12, "weight": 60 },
+        { "reps": 12, "weight": 60 },
+        { "reps": 12, "weight": 60 }
+      ],
+      "type": "legs"
     }
   ]
 }
