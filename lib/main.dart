@@ -10,6 +10,8 @@ import 'workout_card.dart';
 import 'workout_execution_screen.dart';
 import 'models.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
+import 'create_exercise_screen.dart';
+import 'exercise_pool_screen.dart';
 
 void main() {
   runApp(MyApp());
@@ -37,6 +39,7 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
   String selectedType = 'Push';
   String selectedRestTime = '1m'; // New variable for rest time
   List<Workout> workouts = [];
+  Map<String, int> muscleCounts = {}; // Neue Variable für die Muskelgruppen
 
   @override
   void initState() {
@@ -53,6 +56,7 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
           final data = json.decode(workoutsString);
           setState(() {
             workouts = _getWorkoutsForSelectedType(data);
+            _updateMuscleCounts(); // Aktualisiere die Muskelgruppen
           });
           return;
         }
@@ -62,6 +66,7 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
       final data = json.decode(response);
       setState(() {
         workouts = _getWorkoutsForSelectedType(data);
+        _updateMuscleCounts(); // Aktualisiere die Muskelgruppen
       });
     } catch (e) {
       print("Error loading workouts: $e");
@@ -122,12 +127,13 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
   void removeWorkout(int index) {
     setState(() {
       workouts.removeAt(index);
+      _updateMuscleCounts(); // Aktualisiere die Muskelgruppen
       saveWorkouts();
     });
   }
 
   void replaceWorkout(int index) {
-    print("Replace workout at index $index");
+    print("Workout an Index $index ersetzen");
   }
 
   int getDurationInMinutes(String duration) {
@@ -150,16 +156,33 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
     if (newExercise != null) {
       setState(() {
         workouts.add(newExercise);
+        _updateMuscleCounts(); // Aktualisiere die Muskelgruppen
         saveWorkouts();
       });
     }
+  }
+
+  void _updateMuscleCounts() {
+    final counts = <String, int>{};
+    for (var workout in workouts) {
+      for (var muscle in workout.muscles) {
+        if (counts.containsKey(muscle)) {
+          counts[muscle] = counts[muscle]! + 1;
+        } else {
+          counts[muscle] = 1;
+        }
+      }
+    }
+    setState(() {
+      muscleCounts = counts;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Workout Plan'),
+        title: Text('Trainingsplan'),
         actions: [
           IconButton(
             icon: Icon(Icons.settings),
@@ -198,13 +221,6 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
                 },
               ),
               _buildDropdownButton(
-                value: 'Equipment',
-                items: ['Equipment'],
-                onChanged: (String? newValue) {
-                  // Implement equipment change logic if needed
-                },
-              ),
-              _buildDropdownButton(
                 value: selectedRestTime,
                 items: ['1m', '2m', '3m'],
                 onChanged: (String? newValue) {
@@ -219,7 +235,7 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Text(
-              'Target Muscles',
+              'Zielmuskeln',
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
           ),
@@ -227,19 +243,16 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
             height: 120,
             child: ListView(
               scrollDirection: Axis.horizontal,
-              children: [
-                TargetMuscleWidget(muscle: 'Chest', percentage: 58),
-                TargetMuscleWidget(muscle: 'Triceps', percentage: 58),
-                TargetMuscleWidget(muscle: 'Shoulders', percentage: 58),
-                TargetMuscleWidget(
-                    muscle: 'Legs', percentage: 60), // Added Legs
-              ],
+              children: muscleCounts.entries.map((entry) {
+                return TargetMuscleWidget(
+                    muskel: entry.key, anteil: entry.value);
+              }).toList(),
             ),
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Text(
-              '${workouts.length} Exercises',
+              '${workouts.length} Übungen',
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
           ),
@@ -248,7 +261,7 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
               int index = entry.key;
               Workout workout = entry.value;
               return Dismissible(
-                key: Key(workout.title),
+                key: Key('${workout.title}-$index'), // Eindeutiger Schlüssel
                 direction: DismissDirection.endToStart,
                 confirmDismiss: (direction) async {
                   return false;
@@ -274,7 +287,7 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
                           children: [
                             Icon(Icons.swap_horiz, color: Colors.white),
                             SizedBox(width: 5),
-                            Text("Replace",
+                            Text("Ersetzen",
                                 style: TextStyle(color: Colors.white)),
                           ],
                         ),
@@ -293,7 +306,7 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
                           children: [
                             Icon(Icons.delete, color: Colors.white),
                             SizedBox(width: 5),
-                            Text("Delete",
+                            Text("Löschen",
                                 style: TextStyle(color: Colors.white)),
                           ],
                         ),
@@ -312,6 +325,7 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
                           onSave: (updatedWorkout) {
                             setState(() {
                               workouts[index] = updatedWorkout;
+                              _updateMuscleCounts(); // Aktualisiere die Muskelgruppen
                               saveWorkouts();
                             });
                           },
@@ -380,17 +394,17 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
 }
 
 class TargetMuscleWidget extends StatelessWidget {
-  final String muscle;
-  final int percentage;
+  final String muskel;
+  final int anteil;
 
-  TargetMuscleWidget({required this.muscle, required this.percentage});
+  TargetMuscleWidget({required this.muskel, required this.anteil});
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('$muscle clicked!')),
+          SnackBar(content: Text('$muskel angeklickt!')),
         );
       },
       child: Container(
@@ -405,8 +419,8 @@ class TargetMuscleWidget extends StatelessWidget {
           children: [
             Icon(Icons.fitness_center, size: 40),
             SizedBox(height: 4),
-            Text(muscle),
-            Text('$percentage%'),
+            Text(muskel),
+            Text('$anteil Übungen'),
           ],
         ),
       ),
@@ -419,21 +433,21 @@ class SettingsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Settings'),
+        title: Text('Einstellungen'),
       ),
       body: ListView(
         children: [
           ListTile(
-            title: Text('Fitness Goal'),
-            subtitle: Text('Strength Training'),
+            title: Text('Fitnessziel'),
+            subtitle: Text('Krafttraining'),
           ),
           ListTile(
-            title: Text('Fitness Experience'),
-            subtitle: Text('Intermediate'),
+            title: Text('Fitnesserfahrung'),
+            subtitle: Text('Mittelstufe'),
           ),
           ListTile(
-            title: Text('Timed Intervals'),
-            subtitle: Text('Off'),
+            title: Text('Zeitgesteuerte Intervalle'),
+            subtitle: Text('Aus'),
           ),
         ],
       ),
@@ -445,7 +459,7 @@ class AddExerciseDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text('Add Exercise'),
+      title: Text('Übung hinzufügen'),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -460,7 +474,7 @@ class AddExerciseDialog extends StatelessWidget {
                 }
               });
             },
-            child: Text('Add from Pool'),
+            child: Text('Aus Pool hinzufügen'),
           ),
           ElevatedButton(
             onPressed: () async {
@@ -472,124 +486,9 @@ class AddExerciseDialog extends StatelessWidget {
                 Navigator.pop(context, newWorkout);
               }
             },
-            child: Text('Create Custom Exercise'),
+            child: Text('Eigene Übung erstellen'),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class CreateExerciseScreen extends StatefulWidget {
-  @override
-  _CreateExerciseScreenState createState() => _CreateExerciseScreenState();
-}
-
-class _CreateExerciseScreenState extends State<CreateExerciseScreen> {
-  String title = '';
-  String type = 'custom';
-  List<ExerciseSet> warmUpSets = [];
-  List<ExerciseSet> workingSets = [];
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Create Custom Exercise'),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            TextField(
-              decoration: InputDecoration(labelText: 'Exercise Title'),
-              onChanged: (value) {
-                setState(() {
-                  title = value;
-                });
-              },
-            ),
-            SizedBox(height: 10),
-            ElevatedButton(
-              onPressed: () {
-                setState(() {
-                  workingSets.add(ExerciseSet(reps: 10, weight: 50));
-                });
-              },
-              child: Text('Add Working Set'),
-            ),
-            Expanded(
-              child: ListView.builder(
-                itemCount: workingSets.length,
-                itemBuilder: (context, index) {
-                  final set = workingSets[index];
-                  return ListTile(
-                    title: Text('${set.reps} reps - ${set.weight} kg'),
-                    trailing: IconButton(
-                      icon: Icon(Icons.delete),
-                      onPressed: () {
-                        setState(() {
-                          workingSets.removeAt(index);
-                        });
-                      },
-                    ),
-                  );
-                },
-              ),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                final newWorkout = Workout(
-                  title: title,
-                  type: type,
-                  warmUpSets: warmUpSets,
-                  workingSets: workingSets,
-                );
-                Navigator.pop(context, newWorkout);
-              },
-              child: Text('Save Exercise'),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class ExercisePoolScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Exercise Pool'),
-      ),
-      body: FutureBuilder(
-        future: rootBundle.loadString('assets/data/workouts.json'),
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return Center(child: CircularProgressIndicator());
-          }
-          final data = json.decode(snapshot.data as String);
-          final exercises = [
-            ...(data['push'] as List).map((i) => Workout.fromJson(i)).toList(),
-            ...(data['pull'] as List).map((i) => Workout.fromJson(i)).toList(),
-            ...(data['legs'] as List).map((i) => Workout.fromJson(i)).toList(),
-          ];
-
-          return ListView.builder(
-            itemCount: exercises.length,
-            itemBuilder: (context, index) {
-              final workout = exercises[index];
-              return ListTile(
-                title: Text(workout.title),
-                subtitle: Text('${workout.workingSets.length} sets'),
-                onTap: () {
-                  Navigator.pop(context, workout);
-                },
-              );
-            },
-          );
-        },
       ),
     );
   }

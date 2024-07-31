@@ -3,12 +3,14 @@ class Workout {
   final List<ExerciseSet> warmUpSets;
   final List<ExerciseSet> workingSets;
   final String type;
+  final List<String> muscles; // Neue Eigenschaft
 
   Workout({
     required this.title,
     required this.warmUpSets,
     required this.workingSets,
     required this.type,
+    required this.muscles, // Hinzugefügt
   });
 
   factory Workout.fromJson(Map<String, dynamic> json) {
@@ -21,6 +23,7 @@ class Workout {
           .map((set) => ExerciseSet.fromJson(set))
           .toList(),
       type: json['type'],
+      muscles: List<String>.from(json['muscles']), // Hinzugefügt
     );
   }
 
@@ -30,6 +33,7 @@ class Workout {
       'warmUpSets': warmUpSets.map((set) => set.toJson()).toList(),
       'workingSets': workingSets.map((set) => set.toJson()).toList(),
       'type': type,
+      'muscles': muscles, // Hinzugefügt
     };
   }
 }

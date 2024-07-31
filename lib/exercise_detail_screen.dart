@@ -21,16 +21,20 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen> {
   }
 
   void addWarmUpSet() {
-    setState(() {
-      workout.warmUpSets.add(ExerciseSet(reps: 10, weight: 40));
-      widget.onSave(workout);
+    _addSetDialog(context, 'Warm-Up Set hinzufügen', (reps, weight) {
+      setState(() {
+        workout.warmUpSets.add(ExerciseSet(reps: reps, weight: weight));
+        widget.onSave(workout);
+      });
     });
   }
 
   void addWorkingSet() {
-    setState(() {
-      workout.workingSets.add(ExerciseSet(reps: 8, weight: 60));
-      widget.onSave(workout);
+    _addSetDialog(context, 'Arbeitssatz hinzufügen', (reps, weight) {
+      setState(() {
+        workout.workingSets.add(ExerciseSet(reps: reps, weight: weight));
+        widget.onSave(workout);
+      });
     });
   }
 
@@ -82,10 +86,10 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen> {
       body: ListView(
         children: [
           ListTile(
-            title: Text('Warm-up Sets'),
+            title: Text('Warm-Up Sets'),
             trailing: ElevatedButton(
               onPressed: addWarmUpSet,
-              child: Text('Add Warm-up Set'),
+              child: Text('Warm-Up Set hinzufügen'),
             ),
           ),
           ...workout.warmUpSets.asMap().entries.map((entry) {
@@ -98,7 +102,7 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen> {
                     child: TextFormField(
                       initialValue: set.reps.toString(),
                       keyboardType: TextInputType.number,
-                      decoration: InputDecoration(labelText: 'Reps'),
+                      decoration: InputDecoration(labelText: 'Wiederholungen'),
                       onChanged: (value) {
                         int reps = int.tryParse(value) ?? set.reps;
                         updateWarmUpSet(index, reps, set.weight);
@@ -110,7 +114,7 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen> {
                     child: TextFormField(
                       initialValue: set.weight.toString(),
                       keyboardType: TextInputType.number,
-                      decoration: InputDecoration(labelText: 'Weight'),
+                      decoration: InputDecoration(labelText: 'Gewicht (kg)'),
                       onChanged: (value) {
                         int weight = int.tryParse(value) ?? set.weight;
                         updateWarmUpSet(index, set.reps, weight);
@@ -128,10 +132,10 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen> {
             );
           }),
           ListTile(
-            title: Text('Working Sets'),
+            title: Text('Arbeitssätze'),
             trailing: ElevatedButton(
               onPressed: addWorkingSet,
-              child: Text('Add Working Set'),
+              child: Text('Arbeitssatz hinzufügen'),
             ),
           ),
           ...workout.workingSets.asMap().entries.map((entry) {
@@ -144,7 +148,7 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen> {
                     child: TextFormField(
                       initialValue: set.reps.toString(),
                       keyboardType: TextInputType.number,
-                      decoration: InputDecoration(labelText: 'Reps'),
+                      decoration: InputDecoration(labelText: 'Wiederholungen'),
                       onChanged: (value) {
                         int reps = int.tryParse(value) ?? set.reps;
                         updateWorkingSet(index, reps, set.weight);
@@ -156,7 +160,7 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen> {
                     child: TextFormField(
                       initialValue: set.weight.toString(),
                       keyboardType: TextInputType.number,
-                      decoration: InputDecoration(labelText: 'Weight'),
+                      decoration: InputDecoration(labelText: 'Gewicht (kg)'),
                       onChanged: (value) {
                         int weight = int.tryParse(value) ?? set.weight;
                         updateWorkingSet(index, set.reps, weight);
@@ -175,6 +179,55 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen> {
           }),
         ],
       ),
+    );
+  }
+
+  void _addSetDialog(
+      BuildContext context, String title, Function(int, int) onAdd) {
+    int reps = 0;
+    int weight = 0;
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text(title),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                decoration: InputDecoration(labelText: 'Wiederholungen'),
+                keyboardType: TextInputType.number,
+                onChanged: (value) {
+                  reps = int.parse(value);
+                },
+              ),
+              TextField(
+                decoration: InputDecoration(labelText: 'Gewicht (kg)'),
+                keyboardType: TextInputType.number,
+                onChanged: (value) {
+                  weight = int.parse(value);
+                },
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Abbrechen'),
+            ),
+            TextButton(
+              onPressed: () {
+                onAdd(reps, weight);
+                Navigator.of(context).pop();
+              },
+              child: Text('Hinzufügen'),
+            ),
+          ],
+        );
+      },
     );
   }
 }
