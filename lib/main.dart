@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'exercise_detail_screen.dart';
@@ -37,14 +38,32 @@ class WorkoutScreen extends StatefulWidget {
 class _WorkoutScreenState extends State<WorkoutScreen> {
   String selectedDuration = '1h 30m';
   String selectedType = 'Push';
-  String selectedRestTime = '1m'; // New variable for rest time
+  String selectedRestTime = '1m';
   List<Workout> workouts = [];
-  Map<String, int> muscleCounts = {}; // Neue Variable für die Muskelgruppen
+  Map<String, int> muscleCounts = {};
+  Map<String, Color> muscleColors = {
+    'Schultern': Colors.grey,
+    'Brust': Colors.grey,
+    'Bizeps': Colors.grey,
+    'Trizeps': Colors.grey,
+    'Rücken': Colors.grey,
+    'Bauch': Colors.grey,
+    'Beine': Colors.grey,
+    'Waden': Colors.grey,
+  };
+
+  String svgString = '';
 
   @override
   void initState() {
     super.initState();
     loadWorkouts();
+    loadSvg();
+  }
+
+  Future<void> loadSvg() async {
+    svgString = await rootBundle.loadString('assets/body.svg');
+    setState(() {});
   }
 
   Future<void> loadWorkouts() async {
@@ -56,17 +75,18 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
           final data = json.decode(workoutsString);
           setState(() {
             workouts = _getWorkoutsForSelectedType(data);
-            _updateMuscleCounts(); // Aktualisiere die Muskelgruppen
+            _updateMuscleCounts();
+            highlightMuscles(muscleCounts.keys.toList());
           });
           return;
         }
       }
-      // Load from assets if not available in shared preferences
       final response = await rootBundle.loadString('assets/data/workouts.json');
       final data = json.decode(response);
       setState(() {
         workouts = _getWorkoutsForSelectedType(data);
-        _updateMuscleCounts(); // Aktualisiere die Muskelgruppen
+        _updateMuscleCounts();
+        highlightMuscles(muscleCounts.keys.toList());
       });
     } catch (e) {
       print("Error loading workouts: $e");
@@ -107,7 +127,6 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
         final prefs = await SharedPreferences.getInstance();
         await prefs.setString('workouts', json.encode(data));
       } else {
-        // Save workouts to local storage if not on web
         final directory = await getApplicationDocumentsDirectory();
         final path = directory.path;
         final file = File('$path/workouts.json');
@@ -127,7 +146,8 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
   void removeWorkout(int index) {
     setState(() {
       workouts.removeAt(index);
-      _updateMuscleCounts(); // Aktualisiere die Muskelgruppen
+      _updateMuscleCounts();
+      highlightMuscles(muscleCounts.keys.toList());
       saveWorkouts();
     });
   }
@@ -156,7 +176,8 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
     if (newExercise != null) {
       setState(() {
         workouts.add(newExercise);
-        _updateMuscleCounts(); // Aktualisiere die Muskelgruppen
+        _updateMuscleCounts();
+        highlightMuscles(muscleCounts.keys.toList());
         saveWorkouts();
       });
     }
@@ -176,6 +197,25 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
     setState(() {
       muscleCounts = counts;
     });
+  }
+
+  void highlightMuscles(List<String> muscles) {
+    setState(() {
+      muscleColors = {
+        for (var muscle in muscleColors.keys)
+          muscle: muscles.contains(muscle) ? Colors.yellow : Colors.grey,
+      };
+      svgString = _updateSvgColors(svgString, muscleColors);
+    });
+  }
+
+  String _updateSvgColors(String svg, Map<String, Color> colors) {
+    colors.forEach((muscle, color) {
+      final colorHex = '#${color.value.toRadixString(16).substring(2)}';
+      svg = svg.replaceAll(RegExp('id="$muscle" style="[^"]*"'),
+          'id="$muscle" style="fill:$colorHex;stroke:#000000;stroke-linejoin:round;stroke-miterlimit:1.4142;"');
+    });
+    return svg;
   }
 
   @override
@@ -216,7 +256,7 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
                 onChanged: (String? newValue) {
                   setState(() {
                     selectedType = newValue!;
-                    loadWorkouts(); // Reload workouts based on new type
+                    loadWorkouts();
                   });
                 },
               ),
@@ -240,15 +280,15 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
             ),
           ),
           Container(
-            height: 120,
-            child: ListView(
-              scrollDirection: Axis.horizontal,
-              children: muscleCounts.entries.map((entry) {
-                return TargetMuscleWidget(
-                    muskel: entry.key, anteil: entry.value);
-              }).toList(),
-            ),
+            height: 400,
+            child: svgString.isNotEmpty
+                ? SvgPicture.string(
+                    svgString,
+                    semanticsLabel: 'Körper mit hervorgehobenen Muskeln',
+                  )
+                : CircularProgressIndicator(),
           ),
+          SizedBox(height: 10),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Text(
@@ -261,7 +301,7 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
               int index = entry.key;
               Workout workout = entry.value;
               return Dismissible(
-                key: Key('${workout.title}-$index'), // Eindeutiger Schlüssel
+                key: Key('${workout.title}-$index'),
                 direction: DismissDirection.endToStart,
                 confirmDismiss: (direction) async {
                   return false;
@@ -325,7 +365,8 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
                           onSave: (updatedWorkout) {
                             setState(() {
                               workouts[index] = updatedWorkout;
-                              _updateMuscleCounts(); // Aktualisiere die Muskelgruppen
+                              _updateMuscleCounts();
+                              highlightMuscles(muscleCounts.keys.toList());
                               saveWorkouts();
                             });
                           },
@@ -337,7 +378,7 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
               );
             }).toList(),
           ),
-          SizedBox(height: 20), // Add some space before the plus button
+          SizedBox(height: 20),
           Center(
             child: FloatingActionButton(
               onPressed: addExercise,
@@ -354,8 +395,7 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
               builder: (context) => WorkoutExecutionScreen(
                 workouts: workouts,
                 selectedDuration: selectedDuration,
-                selectedRestTime:
-                    selectedRestTime, // Pass the selected rest time
+                selectedRestTime: selectedRestTime,
               ),
             ),
           );
@@ -387,41 +427,6 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
               child: Text(value),
             );
           }).toList(),
-        ),
-      ),
-    );
-  }
-}
-
-class TargetMuscleWidget extends StatelessWidget {
-  final String muskel;
-  final int anteil;
-
-  TargetMuscleWidget({required this.muskel, required this.anteil});
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('$muskel angeklickt!')),
-        );
-      },
-      child: Container(
-        width: 100,
-        margin: EdgeInsets.all(8.0),
-        decoration: BoxDecoration(
-          color: Colors.grey[800],
-          borderRadius: BorderRadius.circular(10),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.fitness_center, size: 40),
-            SizedBox(height: 4),
-            Text(muskel),
-            Text('$anteil Übungen'),
-          ],
         ),
       ),
     );
