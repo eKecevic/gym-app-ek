@@ -36,6 +36,61 @@ class _CreateExerciseScreenState extends State<CreateExerciseScreen> {
               spacing: 8.0,
               children: [
                 FilterChip(
+                  label: Text('Adduktoren'),
+                  selected: selectedMuscles.contains('Adduktoren'),
+                  onSelected: (isSelected) {
+                    setState(() {
+                      isSelected
+                          ? selectedMuscles.add('Adduktoren')
+                          : selectedMuscles.remove('Adduktoren');
+                    });
+                  },
+                ),
+                FilterChip(
+                  label: Text('Arsch'),
+                  selected: selectedMuscles.contains('Arsch'),
+                  onSelected: (isSelected) {
+                    setState(() {
+                      isSelected
+                          ? selectedMuscles.add('Arsch')
+                          : selectedMuscles.remove('Arsch');
+                    });
+                  },
+                ),
+                FilterChip(
+                  label: Text('Bauch'),
+                  selected: selectedMuscles.contains('Bauch'),
+                  onSelected: (isSelected) {
+                    setState(() {
+                      isSelected
+                          ? selectedMuscles.add('Bauch')
+                          : selectedMuscles.remove('Bauch');
+                    });
+                  },
+                ),
+                FilterChip(
+                  label: Text('Beine'),
+                  selected: selectedMuscles.contains('Beine'),
+                  onSelected: (isSelected) {
+                    setState(() {
+                      isSelected
+                          ? selectedMuscles.add('Beine')
+                          : selectedMuscles.remove('Beine');
+                    });
+                  },
+                ),
+                FilterChip(
+                  label: Text('Bizeps'),
+                  selected: selectedMuscles.contains('Bizeps'),
+                  onSelected: (isSelected) {
+                    setState(() {
+                      isSelected
+                          ? selectedMuscles.add('Bizeps')
+                          : selectedMuscles.remove('Bizeps');
+                    });
+                  },
+                ),
+                FilterChip(
                   label: Text('Brust'),
                   selected: selectedMuscles.contains('Brust'),
                   onSelected: (isSelected) {
@@ -47,13 +102,101 @@ class _CreateExerciseScreenState extends State<CreateExerciseScreen> {
                   },
                 ),
                 FilterChip(
-                  label: Text('Trizeps'),
-                  selected: selectedMuscles.contains('Trizeps'),
+                  label: Text('Ellbogen'),
+                  selected: selectedMuscles.contains('Ellbogen'),
                   onSelected: (isSelected) {
                     setState(() {
                       isSelected
-                          ? selectedMuscles.add('Trizeps')
-                          : selectedMuscles.remove('Trizeps');
+                          ? selectedMuscles.add('Ellbogen')
+                          : selectedMuscles.remove('Ellbogen');
+                    });
+                  },
+                ),
+                FilterChip(
+                  label: Text('Füße'),
+                  selected: selectedMuscles.contains('Füße'),
+                  onSelected: (isSelected) {
+                    setState(() {
+                      isSelected
+                          ? selectedMuscles.add('Füße')
+                          : selectedMuscles.remove('Füße');
+                    });
+                  },
+                ),
+                FilterChip(
+                  label: Text('Handgelenk'),
+                  selected: selectedMuscles.contains('Handgelenk'),
+                  onSelected: (isSelected) {
+                    setState(() {
+                      isSelected
+                          ? selectedMuscles.add('Handgelenk')
+                          : selectedMuscles.remove('Handgelenk');
+                    });
+                  },
+                ),
+                FilterChip(
+                  label: Text('Hüfte'),
+                  selected: selectedMuscles.contains('Hüfte'),
+                  onSelected: (isSelected) {
+                    setState(() {
+                      isSelected
+                          ? selectedMuscles.add('Hüfte')
+                          : selectedMuscles.remove('Hüfte');
+                    });
+                  },
+                ),
+                FilterChip(
+                  label: Text('Knie'),
+                  selected: selectedMuscles.contains('Knie'),
+                  onSelected: (isSelected) {
+                    setState(() {
+                      isSelected
+                          ? selectedMuscles.add('Knie')
+                          : selectedMuscles.remove('Knie');
+                    });
+                  },
+                ),
+                FilterChip(
+                  label: Text('Nacken'),
+                  selected: selectedMuscles.contains('Nacken'),
+                  onSelected: (isSelected) {
+                    setState(() {
+                      isSelected
+                          ? selectedMuscles.add('Nacken')
+                          : selectedMuscles.remove('Nacken');
+                    });
+                  },
+                ),
+                FilterChip(
+                  label: Text('Oberschenkel'),
+                  selected: selectedMuscles.contains('Oberschenkel'),
+                  onSelected: (isSelected) {
+                    setState(() {
+                      isSelected
+                          ? selectedMuscles.add('Oberschenkel')
+                          : selectedMuscles.remove('Oberschenkel');
+                    });
+                  },
+                ),
+                FilterChip(
+                  label: Text('Rücken'),
+                  selected: selectedMuscles.contains('Rücken'),
+                  onSelected: (isSelected) {
+                    setState(() {
+                      isSelected
+                          ? selectedMuscles.add('Rücken')
+                          : selectedMuscles.remove('Rücken');
+                    });
+                  },
+                ),
+                FilterChip(
+                  label: Text('Schrägbauchmuskeln'),
+                  selected: selectedMuscles.contains('Schrägbauchmuskeln'),
+                  onSelected: (isSelected) {
+                    setState(() {
+                      isSelected
+                          ? selectedMuscles.add('Schrägbauchmuskeln')
+                          : selectedMuscles.remove('Schrägbauchmuskeln');
                     });
                   },
                 ),
@@ -69,17 +212,49 @@ class _CreateExerciseScreenState extends State<CreateExerciseScreen> {
                   },
                 ),
                 FilterChip(
-                  label: Text('Beine'),
-                  selected: selectedMuscles.contains('Beine'),
+                  label: Text('Trizeps'),
+                  selected: selectedMuscles.contains('Trizeps'),
                   onSelected: (isSelected) {
                     setState(() {
                       isSelected
-                          ? selectedMuscles.add('Beine')
-                          : selectedMuscles.remove('Beine');
+                          ? selectedMuscles.add('Trizeps')
+                          : selectedMuscles.remove('Trizeps');
                     });
                   },
                 ),
-                // Füge hier weitere Muskelgruppen hinzu, falls erforderlich
+                FilterChip(
+                  label: Text('Unterarm'),
+                  selected: selectedMuscles.contains('Unterarm'),
+                  onSelected: (isSelected) {
+                    setState(() {
+                      isSelected
+                          ? selectedMuscles.add('Unterarm')
+                          : selectedMuscles.remove('Unterarm');
+                    });
+                  },
+                ),
+                FilterChip(
+                  label: Text('Unterer Rücken'),
+                  selected: selectedMuscles.contains('Unterer Rücken'),
+                  onSelected: (isSelected) {
+                    setState(() {
+                      isSelected
+                          ? selectedMuscles.add('Unterer Rücken')
+                          : selectedMuscles.remove('Unterer Rücken');
+                    });
+                  },
+                ),
+                FilterChip(
+                  label: Text('Waden'),
+                  selected: selectedMuscles.contains('Waden'),
+                  onSelected: (isSelected) {
+                    setState(() {
+                      isSelected
+                          ? selectedMuscles.add('Waden')
+                          : selectedMuscles.remove('Waden');
+                    });
+                  },
+                ),
               ],
             ),
             SizedBox(height: 10),

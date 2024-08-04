@@ -152,14 +152,12 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
   }
 
   void _updateActiveMuscles() {
-    // Bestimme die aktiven Muskeln basierend auf den Workouts
     final muscleSet = <String>{};
     for (var workout in workouts) {
       muscleSet.addAll(workout.muscles);
     }
     setState(() {
       activeMuscles = muscleSet.toList();
-      print('Active Muscles: $activeMuscles'); // Debugging-Ausgabe
     });
   }
 
