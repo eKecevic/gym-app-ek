@@ -33,6 +33,7 @@ class _WorkoutExecutionScreenState extends State<WorkoutExecutionScreen> {
   int remainingRestTime = 0;
   bool showRestPopup = false;
   bool canSkipRest = false; // Flag to track if rest can be skipped
+  late int currentSetDuration; // New variable to track current set duration
 
   @override
   void initState() {
@@ -40,6 +41,7 @@ class _WorkoutExecutionScreenState extends State<WorkoutExecutionScreen> {
     totalDuration = getDurationInMinutes(widget.selectedDuration) * 60;
     restTime = getRestTimeInSeconds(widget.selectedRestTime);
     startWorkoutTimer();
+    currentSetDuration = 0; // Initialize currentSetDuration
   }
 
   @override
@@ -54,6 +56,9 @@ class _WorkoutExecutionScreenState extends State<WorkoutExecutionScreen> {
       setState(() {
         if (remainingTime < totalDuration) {
           remainingTime++;
+          if (!isResting) {
+            currentSetDuration++; // Increment only when not resting
+          }
         } else {
           timer.cancel();
         }
@@ -82,9 +87,11 @@ class _WorkoutExecutionScreenState extends State<WorkoutExecutionScreen> {
     if (currentSetIndex <
         widget.workouts[currentExerciseIndex].workingSets.length - 1) {
       currentSetIndex++;
+      currentSetDuration = 0; // Reset duration for the next set
     } else if (currentExerciseIndex < widget.workouts.length - 1) {
       currentExerciseIndex++;
       currentSetIndex = 0;
+      currentSetDuration = 0; // Reset duration for the next set
     } else {
       // Workout completed
       workoutTimer.cancel();
@@ -126,7 +133,7 @@ class _WorkoutExecutionScreenState extends State<WorkoutExecutionScreen> {
       }
     } else {
       setState(() {
-        lastSetDuration = remainingTime - setStartTime;
+        lastSetDuration = currentSetDuration; // Update last set duration
         lastSet =
             widget.workouts[currentExerciseIndex].workingSets[currentSetIndex];
         setStartTime = remainingTime;
@@ -163,7 +170,6 @@ class _WorkoutExecutionScreenState extends State<WorkoutExecutionScreen> {
     final progress = completedSets / totalSets;
     final bufferSize = 1 / widget.workouts.length;
     final bufferProgress = (currentExerciseIndex + 1) * bufferSize;
-    final currentSetDuration = remainingTime - setStartTime;
 
     return Scaffold(
       appBar: AppBar(
@@ -236,7 +242,7 @@ class _WorkoutExecutionScreenState extends State<WorkoutExecutionScreen> {
                 ),
               ),
               Text(
-                'Set Duration: ${currentSetDuration ~/ 60}:${(currentSetDuration % 60).toString().padLeft(2, '0')}',
+                'Set Duration: ${currentSetDuration ~/ 60}:${(currentSetDuration % 60).toString().padLeft(2, '0')}', // Updated to use currentSetDuration
                 style: TextStyle(fontSize: 16),
               ),
               if (isResting) // Display rest time countdown only if resting
@@ -252,6 +258,7 @@ class _WorkoutExecutionScreenState extends State<WorkoutExecutionScreen> {
                 style: TextStyle(fontSize: 16),
               ),
               SizedBox(height: 10),
+              Spacer(), // Use Spacer to push buttons to the bottom
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
