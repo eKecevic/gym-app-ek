@@ -82,6 +82,17 @@ class _WorkoutSessionScreenState extends State<WorkoutSessionScreen> {
           ],
         ),
       ),
+      // Hier verwenden wir heroTag, um es eindeutig zu machen
+      floatingActionButton: FloatingActionButton(
+        heroTag:
+            'workoutSessionFab', // Eindeutiges heroTag für diesen FloatingActionButton
+        onPressed: () {
+          // Aktion, die ausgeführt werden soll, wenn der Button gedrückt wird
+          Navigator.pop(
+              context); // Beispiel: Gehe zurück zum vorherigen Bildschirm
+        },
+        child: Icon(Icons.stop),
+      ),
     );
   }
 }
