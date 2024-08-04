@@ -1,6 +1,6 @@
 <!-- füße.svg -->
 <svg version="1.1" id="Füße" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 612 722.6" xml:space="preserve">
-  <path id="Füße" style="fill:#CCCCCC;stroke:#000000;stroke-linejoin:round;stroke-miterlimit:1.4142;"
+  <path id="Füße" style="fill:#CCCCCC;stroke:#000000;stroke-width:2;stroke-linejoin:round;stroke-miterlimit:1.4142;"
     d="M118.955,666c0,0,5.679-11.854,16.045-1.317c0,0,1.724,29.222,9,40.317
        c0,0-25.608,3.958-34.137-2c-0.041-0.036,8.48-11.346,9.092-36.72z 
        M188.08,666c0,0-5.679-11.854-16.045-1.317c0,0-1.724,29.222-9,40.317

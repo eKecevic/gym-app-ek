@@ -1,6 +1,6 @@
 <!-- handgelenk.svg -->
 <svg version="1.1" id="Handgelenk" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 612 722.6" xml:space="preserve">
-  <path id="Handgelenk" style="fill:#CCCCCC;stroke:#000000;stroke-linejoin:round;stroke-miterlimit:1.4142;"
+  <path id="Handgelenk" style="fill:#CCCCCC;stroke:#000000;stroke-width:2;stroke-linejoin:round;stroke-miterlimit:1.4142;"
     d="M28,351.408c0,0,5.414,9.392,22,4.996L51.411,350.709c0,0-9.292-2.099-8.393-14.989
        c0,0-4.423,11.191-11.018,8.393L28,351.408z 
        M281,355.604c0,0-6.015,11.591-24,6.795l0-5.995c0,0,9.433-3.098,8.533-16.187

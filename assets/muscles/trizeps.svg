@@ -1,6 +1,6 @@
 <!-- trizeps.svg -->
 <svg version="1.1" id="Trizeps" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 612 722.6" xml:space="preserve">
-  <path id="Trizeps" style="fill:#CCCCCC;stroke:#000000;stroke-linejoin:round;stroke-miterlimit:1.4142;"
+  <path id="Trizeps" style="fill:#CCCCCC;stroke:#000000;stroke-width:2;stroke-linejoin:round;stroke-miterlimit:1.4142;"
     d="M516.825,170.958C516.825,170.958,529.714,163.364,534.31,165.562C538.906,167.761,547.299,181.749,548.298,187.544
        C546.994,202.329,551,239.101,551,239.101C551,239.101,551.895,244.896,547.299,246.295C542.803,247.694,543.403,234.405,540.005,232.906
        C536.608,231.408,539.805,243.198,536.408,244.197C533.011,245.096,522.92,241,522.92,241L515.326,222.015

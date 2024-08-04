@@ -1,6 +1,6 @@
 <!-- oberschenkel.svg -->
 <svg version="1.1" id="Oberschenkel" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 612 722.6" xml:space="preserve">
-  <path id="Oberschenkel" style="fill:#CCCCCC;stroke:#000000;stroke-linejoin:round;stroke-miterlimit:1.4142;"
+  <path id="Oberschenkel" style="fill:#CCCCCC;stroke:#000000;stroke-width:2;stroke-linejoin:round;stroke-miterlimit:1.4142;"
     d="M109.863,332.624c0,0,37.069,82.131,34.271,120.599c-2.797,38.468-7.134,51.985-7.134,61.777
        c0,9.792,2.838-13.816-9.452-13.916c-14.388-0.099-25.079,11.591-28.976,24.38c-0.599,1.799-2.098-36.47-2.098-36.47
        c0,0-4.177-10.591-7.574-45.961c-5.096-53.756,33.552-73.04,21.863-109.409z 

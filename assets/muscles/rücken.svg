@@ -1,12 +1,12 @@
 <!-- rücken.svg -->
 <svg version="1.1" id="Rücken" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 612 722.6" xml:space="preserve">
-    <path id="Rücken" style="fill:#CCCCCC;stroke:#000000;stroke-linejoin:round;stroke-miterlimit:1.4142;"
+    <path id="Rücken" style="fill:#CCCCCC;stroke:#000000;stroke-width:2;stroke-linejoin:round;stroke-miterlimit:1.4142;"
     d="M450.5,265.3c0.3,1.3,2.6-10.3,5.4-9c2.9,1.3,6.4,9,6.4,8.7c-0.9-9.5,7.6-24.2,13.8-34.3
     c6.7-10.9,10.2-11.5,14.7-25.6c1.8-5.6,0-42.3,7.7-55.8c7.7-13.5,13.1-12.1,18.9-15.4c1.3-0.7-47.2-4.6-51.4-37.3
     c-0.7-5.4-0.7-10.3,0.1-15.3c0.9-4.9-25.2-6.9-26.6-0.3c-2.1,10.1,15.9,39-45.5,48.4c-4.3,0.7,12.7,7.2,22.1,21.5
     c2.3,3.5,2.2,11.7,9.3,58C427,219.3,447.4,249.9,450.5,265.3z"/>
     
-    <path id="Rücken" style="fill:#CCCCCC;stroke:#000000;stroke-linejoin:round;stroke-miterlimit:1.4142;"
+    <path id="Rücken" style="fill:#CCCCCC;stroke:#000000;stroke-width:2;stroke-linejoin:round;stroke-miterlimit:1.4142;"
     d="M466.966,262.182C466.966,262.182,484.551,280.067,486.45,290.758C488.348,301.449,488.348,317.736,497.541,316.237
     C497.641,316.237,494.443,312.241,498.64,304.947C513.228,279.867,512.628,250.692,512.628,250.692L513.927,204.93
     C513.927,204.93,505.334,207.827,494.543,200.733C492.345,199.334,493.644,217.319,483.252,226.712
