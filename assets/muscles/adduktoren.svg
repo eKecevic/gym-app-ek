@@ -1,3 +1,8 @@
-<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 612 722.6">
-    <path id="Adduktoren" style="fill:#CCCCCC;stroke:#000000;stroke-linejoin:round;stroke-miterlimit:1.4142;" d=" M 118.955 336.42 C 118.955 336.42 146.932 421.919 146.332 445 L 150 415.555 L 152.827 380.584 C 152.827 380.584 142.036 344.714 121.553 332.124 C 121.653 332.124 118.256 331.524 118.955 336.42 Z M 187.698 337.02 C 187.698 337.02 158.7 421.819 159 445 L 155 415.555 L 153.926 380 C 153.926 380 164.517 345.113 185.1 332.723 C 185.1 332.723 188.497 332.124 187.698 337.02 Z "/>
+<!-- adduktoren.svg -->
+<svg version="1.1" id="Adduktoren" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 612 722.6" xml:space="preserve">
+  <path id="Adduktoren" style="fill:#CCCCCC;stroke:#000000;stroke-linejoin:round;stroke-miterlimit:1.4142;"
+    d="M118.955,336.42c0,0,27.977,85.499,27.377,108.58l3.668-29.445l2.827-34.971
+       c0,0-10.791-35.87-31.274-48.46c-0.1,0-3.497-0.6-2.798,4.3z 
+       M187.698,337.02c0,0-29.298,84.799-29,107.98l4-29.445l-1.074-35.555
+       c0,0,10.591-34.887,31.174-47.277c0,0,3.397-0.6,2.598,4.3z"/>
 </svg>

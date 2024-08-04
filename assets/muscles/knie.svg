@@ -1,5 +1,8 @@
-<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 612 722.6">
-    <path id="Knie" style="fill:#CCCCCC;stroke:#000000;stroke-linejoin:round;stroke-miterlimit:1.4142;" d="M129.8,535.8c0,0,0,12.4-5.5,18.3c-5.5,5.9-21.3,4.6-23.4-18.3c-2.1-22.8,15.8-32,28.9-13
-        C129.8,522.8,131.1,525.8,129.8,535.8z M175.5,535.8c0,0,0,12.4,5.5,18.3c5.5,5.9,21.3,4.6,23.4-18.3c2.1-22.8-15.8-32-28.9-13
-        C175.5,522.8,174.1,525.8,175.5,535.8z"/>
+<!-- knie.svg -->
+<svg version="1.1" id="Knie" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 612 722.6" xml:space="preserve">
+  <path id="Knie" style="fill:#CCCCCC;stroke:#000000;stroke-linejoin:round;stroke-miterlimit:1.4142;"
+    d="M129.8,535.8c0,0,0,12.4-5.5,18.3c-5.5,5.9-21.3,4.6-23.4-18.3c-2.1-22.8,15.8-32,28.9-13
+       C129.8,522.8,131.1,525.8,129.8,535.8z 
+       M175.5,535.8c0,0,0,12.4,5.5,18.3c5.5,5.9,21.3,4.6,23.4-18.3c2.1-22.8-15.8-32-28.9-13
+       C175.5,522.8,174.1,525.8,175.5,535.8z"/>
 </svg>

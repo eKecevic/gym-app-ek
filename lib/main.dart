@@ -13,6 +13,7 @@ import 'models.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'create_exercise_screen.dart';
 import 'exercise_pool_screen.dart';
+import 'muscle_map.dart'; // Importiere das MuscleMap Widget
 
 void main() {
   runApp(MyApp());
@@ -40,30 +41,12 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
   String selectedType = 'Push';
   String selectedRestTime = '1m';
   List<Workout> workouts = [];
-  Map<String, int> muscleCounts = {};
-  Map<String, Color> muscleColors = {
-    'Schultern': Colors.grey,
-    'Brust': Colors.grey,
-    'Bizeps': Colors.grey,
-    'Trizeps': Colors.grey,
-    'Rücken': Colors.grey,
-    'Bauch': Colors.grey,
-    'Beine': Colors.grey,
-    'Waden': Colors.grey,
-  };
-
-  String svgString = '';
+  List<String> activeMuscles = []; // Liste der aktiven Muskeln
 
   @override
   void initState() {
     super.initState();
     loadWorkouts();
-    loadSvg();
-  }
-
-  Future<void> loadSvg() async {
-    svgString = await rootBundle.loadString('assets/body.svg');
-    setState(() {});
   }
 
   Future<void> loadWorkouts() async {
@@ -75,8 +58,7 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
           final data = json.decode(workoutsString);
           setState(() {
             workouts = _getWorkoutsForSelectedType(data);
-            _updateMuscleCounts();
-            highlightMuscles(muscleCounts.keys.toList());
+            _updateActiveMuscles();
           });
           return;
         }
@@ -85,8 +67,7 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
       final data = json.decode(response);
       setState(() {
         workouts = _getWorkoutsForSelectedType(data);
-        _updateMuscleCounts();
-        highlightMuscles(muscleCounts.keys.toList());
+        _updateActiveMuscles();
       });
     } catch (e) {
       print("Error loading workouts: $e");
@@ -146,25 +127,13 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
   void removeWorkout(int index) {
     setState(() {
       workouts.removeAt(index);
-      _updateMuscleCounts();
-      highlightMuscles(muscleCounts.keys.toList());
+      _updateActiveMuscles();
       saveWorkouts();
     });
   }
 
   void replaceWorkout(int index) {
     print("Workout an Index $index ersetzen");
-  }
-
-  int getDurationInMinutes(String duration) {
-    final parts = duration.split(' ');
-    final hours = int.parse(parts[0].replaceAll('h', ''));
-    final minutes = int.parse(parts[1].replaceAll('m', ''));
-    return hours * 60 + minutes;
-  }
-
-  int getRestTimeInSeconds(String restTime) {
-    return int.parse(restTime.replaceAll('m', '')) * 60;
   }
 
   void addExercise() async {
@@ -176,46 +145,22 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
     if (newExercise != null) {
       setState(() {
         workouts.add(newExercise);
-        _updateMuscleCounts();
-        highlightMuscles(muscleCounts.keys.toList());
+        _updateActiveMuscles();
         saveWorkouts();
       });
     }
   }
 
-  void _updateMuscleCounts() {
-    final counts = <String, int>{};
+  void _updateActiveMuscles() {
+    // Bestimme die aktiven Muskeln basierend auf den Workouts
+    final muscleSet = <String>{};
     for (var workout in workouts) {
-      for (var muscle in workout.muscles) {
-        if (counts.containsKey(muscle)) {
-          counts[muscle] = counts[muscle]! + 1;
-        } else {
-          counts[muscle] = 1;
-        }
-      }
+      muscleSet.addAll(workout.muscles);
     }
     setState(() {
-      muscleCounts = counts;
+      activeMuscles = muscleSet.toList();
+      print('Active Muscles: $activeMuscles'); // Debugging-Ausgabe
     });
-  }
-
-  void highlightMuscles(List<String> muscles) {
-    setState(() {
-      muscleColors = {
-        for (var muscle in muscleColors.keys)
-          muscle: muscles.contains(muscle) ? Colors.yellow : Colors.grey,
-      };
-      svgString = _updateSvgColors(svgString, muscleColors);
-    });
-  }
-
-  String _updateSvgColors(String svg, Map<String, Color> colors) {
-    colors.forEach((muscle, color) {
-      final colorHex = '#${color.value.toRadixString(16).substring(2)}';
-      svg = svg.replaceAll(RegExp('id="$muscle" style="[^"]*"'),
-          'id="$muscle" style="fill:$colorHex;stroke:#000000;stroke-linejoin:round;stroke-miterlimit:1.4142;"');
-    });
-    return svg;
   }
 
   @override
@@ -281,12 +226,10 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
           ),
           Container(
             height: 400,
-            child: svgString.isNotEmpty
-                ? SvgPicture.string(
-                    svgString,
-                    semanticsLabel: 'Körper mit hervorgehobenen Muskeln',
-                  )
-                : CircularProgressIndicator(),
+            child: MuscleMap(
+              activeMuscles:
+                  activeMuscles, // Geben Sie die aktiven Muskeln weiter
+            ),
           ),
           SizedBox(height: 10),
           Padding(
@@ -365,8 +308,7 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
                           onSave: (updatedWorkout) {
                             setState(() {
                               workouts[index] = updatedWorkout;
-                              _updateMuscleCounts();
-                              highlightMuscles(muscleCounts.keys.toList());
+                              _updateActiveMuscles();
                               saveWorkouts();
                             });
                           },

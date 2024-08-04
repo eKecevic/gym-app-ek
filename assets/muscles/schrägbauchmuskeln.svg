@@ -1,5 +1,8 @@
-<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 612 722.6">
-    <path id="Schrägbauchmuskeln" style="fill:#CCCCCC;stroke:#000000;stroke-linejoin:round;stroke-miterlimit:1.4142;" d="M125.2,218c0,0,4.9,110.6,0,114.6c-4.8,4-5.8-22.1-23.6-25c-3.3-0.6-0.6-59.9-8.5-74.1
-        C85.1,219.3,121.8,213.4,125.2,218L125.2,218z M180.5,218c0,0-4.9,110.6,0,114.6c4.8,4,5.8-22.1,23.6-25c3.3-0.6,0.6-59.9,8.5-74.1
-        C220.6,219.3,183.9,213.4,180.5,218L180.5,218z"/>
+<!-- schrägbauchmuskeln.svg -->
+<svg version="1.1" id="Schrägbauchmuskeln" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 612 722.6" xml:space="preserve">
+  <path id="Schrägbauchmuskeln" style="fill:#CCCCCC;stroke:#000000;stroke-linejoin:round;stroke-miterlimit:1.4142;"
+    d="M125.2,218c0,0,4.9,110.6,0,114.6c-4.8,4-5.8-22.1-23.6-25c-3.3-0.6-0.6-59.9-8.5-74.1
+       C85.1,219.3,121.8,213.4,125.2,218L125.2,218z 
+       M180.5,218c0,0-4.9,110.6,0,114.6c4.8,4,5.8-22.1,23.6-25c3.3-0.6,0.6-59.9,8.5-74.1
+       C220.6,219.3,183.9,213.4,180.5,218L180.5,218z"/>
 </svg>

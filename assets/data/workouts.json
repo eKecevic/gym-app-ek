@@ -12,7 +12,7 @@
         { "reps": 8, "weight": 60 }
       ],
       "type": "push",
-      "muscles": ["Chest", "Triceps", "Shoulders"]
+      "muscles": ["Brust", "Trizeps", "Schultern"]
     },
     {
       "title": "Bankdrücken mit engem Griff",
@@ -26,7 +26,7 @@
         { "reps": 8, "weight": 60 }
       ],
       "type": "push",
-      "muscles": ["Chest", "Triceps"]
+      "muscles": ["Brust", "Trizeps"]
     },
     {
       "title": "Schrägbankdrücken mit Kurzhanteln",
@@ -39,7 +39,7 @@
         { "reps": 10, "weight": 30 }
       ],
       "type": "push",
-      "muscles": ["Chest", "Shoulders"]
+      "muscles": ["Brust", "Schultern"]
     },
     {
       "title": "Seitenheben mit Kurzhanteln",
@@ -52,7 +52,7 @@
         { "reps": 12, "weight": 12 }
       ],
       "type": "push",
-      "muscles": ["Shoulders"]
+      "muscles": ["Schultern"]
     },
     {
       "title": "Überkopfdrücken mit Langhantel",
@@ -65,7 +65,7 @@
         { "reps": 8, "weight": 50 }
       ],
       "type": "push",
-      "muscles": ["Shoulders", "Triceps"]
+      "muscles": ["Schultern", "Trizeps"]
     },
     {
       "title": "Dips",
@@ -78,7 +78,7 @@
         { "reps": 8, "weight": 0 }
       ],
       "type": "push",
-      "muscles": ["Chest", "Triceps", "Shoulders"]
+      "muscles": ["Brust", "Trizeps", "Schultern"]
     },
     {
       "title": "Trizepsdrücken am Kabelzug",
@@ -91,7 +91,7 @@
         { "reps": 12, "weight": 30 }
       ],
       "type": "push",
-      "muscles": ["Triceps"]
+      "muscles": ["Trizeps"]
     }
   ],
   "pull": [
@@ -107,7 +107,7 @@
         { "reps": 8, "weight": 20 }
       ],
       "type": "pull",
-      "muscles": ["Rear Delts"]
+      "muscles": ["Hintere Schultern"]
     },
     {
       "title": "Klimmzüge",
@@ -120,7 +120,7 @@
         { "reps": 8, "weight": 0 }
       ],
       "type": "pull",
-      "muscles": ["Back", "Biceps"]
+      "muscles": ["Rücken", "Bizeps"]
     },
     {
       "title": "Langhantelrudern",
@@ -133,7 +133,7 @@
         { "reps": 8, "weight": 50 }
       ],
       "type": "pull",
-      "muscles": ["Back", "Biceps"]
+      "muscles": ["Rücken", "Bizeps"]
     },
     {
       "title": "Kabelzug zur Brust",
@@ -146,7 +146,7 @@
         { "reps": 12, "weight": 30 }
       ],
       "type": "pull",
-      "muscles": ["Back", "Biceps"]
+      "muscles": ["Rücken", "Bizeps"]
     },
     {
       "title": "Face Pulls",
@@ -159,7 +159,7 @@
         { "reps": 12, "weight": 25 }
       ],
       "type": "pull",
-      "muscles": ["Rear Delts", "Back"]
+      "muscles": ["Hintere Schultern", "Rücken"]
     },
     {
       "title": "Kurzhantelrudern",
@@ -172,7 +172,7 @@
         { "reps": 10, "weight": 30 }
       ],
       "type": "pull",
-      "muscles": ["Back", "Biceps"]
+      "muscles": ["Rücken", "Bizeps"]
     },
     {
       "title": "Latziehen zur Brust",
@@ -185,7 +185,7 @@
         { "reps": 12, "weight": 40 }
       ],
       "type": "pull",
-      "muscles": ["Back", "Biceps"]
+      "muscles": ["Rücken", "Bizeps"]
     }
   ],
   "legs": [
@@ -201,7 +201,7 @@
         { "reps": 8, "weight": 60 }
       ],
       "type": "legs",
-      "muscles": ["Quads", "Glutes", "Hamstrings"]
+      "muscles": ["Beine", "Arsch", "Oberschenkel"]
     },
     {
       "title": "Bulgarische Kniebeugen",
@@ -215,7 +215,7 @@
         { "reps": 8, "weight": 30 }
       ],
       "type": "legs",
-      "muscles": ["Quads", "Glutes", "Hamstrings"]
+      "muscles": ["Beine", "Arsch", "Oberschenkel"]
     },
     {
       "title": "Beinpresse",
@@ -228,7 +228,7 @@
         { "reps": 10, "weight": 140 }
       ],
       "type": "legs",
-      "muscles": ["Quads", "Glutes"]
+      "muscles": ["Beine", "Arsch"]
     },
     {
       "title": "Wadenheben",
@@ -241,7 +241,7 @@
         { "reps": 12, "weight": 80 }
       ],
       "type": "legs",
-      "muscles": ["Calves"]
+      "muscles": ["Waden"]
     },
     {
       "title": "Frontkniebeugen",
@@ -254,7 +254,7 @@
         { "reps": 8, "weight": 50 }
       ],
       "type": "legs",
-      "muscles": ["Quads", "Glutes"]
+      "muscles": ["Beine", "Arsch"]
     },
     {
       "title": "Beinbeuger liegend",
@@ -267,7 +267,7 @@
         { "reps": 12, "weight": 60 }
       ],
       "type": "legs",
-      "muscles": ["Hamstrings"]
+      "muscles": ["Oberschenkel"]
     },
     {
       "title": "Beinstrecker",
@@ -280,7 +280,7 @@
         { "reps": 12, "weight": 60 }
       ],
       "type": "legs",
-      "muscles": ["Quads"]
+      "muscles": ["Beine"]
     }
   ]
 }
